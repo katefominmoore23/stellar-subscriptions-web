@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { describeInterval, maxCharges, pluralize, shortAddress } from "@/lib/format";
+import { describeInterval, maxCharges, pluralize, shortAddress, normalizeTo30Days } from "@/lib/format";
 import { TokenAmount } from "@/components/ui/TokenAmount";
 import type { Plan } from "@/types";
 import { PlanBadge } from "./PlanBadge";
@@ -17,6 +17,10 @@ export function PlanCard({ plan }: { plan: Plan }) {
       <p className="text-2xl font-semibold text-fg">
         <TokenAmount token={plan.token} value={plan.amountPerPeriod} />
         <span className="ml-1 text-sm font-normal text-muted">{describeInterval(plan.intervalLedgers)}</span>
+      </p>
+      <p className="text-xs text-muted">
+        <span className="block font-medium">Estimated cost per 30 days:</span>
+        <TokenAmount token={plan.token} value={normalizeTo30Days(plan.amountPerPeriod, plan.intervalLedgers)} />
       </p>
       <dl className="mt-auto grid grid-cols-2 gap-2 text-xs text-muted">
         <div>

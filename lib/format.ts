@@ -127,3 +127,21 @@ export function pluralize(count: bigint | number, singular: string, plural = `${
   const n = typeof count === "bigint" ? count : BigInt(count);
   return `${n.toLocaleString("en-US")} ${n === 1n ? singular : plural}`;
 }
+
+/** Cost normalized to 30 days for easy comparison across different billing intervals. */
+export function normalizeTo30Days(amountPerPeriod: bigint, intervalLedgers: number): bigint {
+  if (intervalLedgers <= 0 || amountPerPeriod <= 0n) return 0n;
+  const THIRTY_DAYS_LEDGERS = 518_400;
+  return (BigInt(THIRTY_DAYS_LEDGERS) * amountPerPeriod) / BigInt(intervalLedgers);
+}
+
+/** Validate a Stellar public key (account address). */
+export function isValidStellarAddress(address: string): boolean {
+  if (typeof address !== "string") return false;
+  try {
+    const { StrKey } = require("@stellar/stellar-sdk");
+    return StrKey.isValidEd25519PublicKey(address);
+  } catch {
+    return false;
+  }
+}
